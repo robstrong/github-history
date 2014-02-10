@@ -1,0 +1,16 @@
+{
+    "name": "robstrong/github-history",
+    "require": {
+        "symfony/console": "2.5.*@dev",
+        "twig/twig": "~1.7"
+    },
+    "autoload": {
+        "psr-4": {"Strong\\GithubHistory\\": "src/"}
+    },
+    "authors": [
+        {
+            "name": "Rob Strong",
+            "email": "rstrong@pica9.com"
+        }
+    ]
+}
