@@ -15,7 +15,15 @@ class Renderer
     public function writeTo($outputPath)
     {
         $content = $this->getTwig()->render('index.html.twig', $this->data);
-        file_put_contents($outputPath . 'index.html', $content);
+        file_put_contents($this->formatOutputLocation($outputPath), $content);
+    }
+
+    protected function formatOutputLocation($outputPath)
+    {
+        if (substr($outputPath, -4) == 'html') {
+            return $outputPath;
+        }
+        return rtrim($outputPath,'/') . '/index.html';
     }
 
     public function setTemplatePath($path)

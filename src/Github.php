@@ -104,7 +104,10 @@ class Github
         );
 
         foreach ($releases as $release) {
-            $formattedData['releases'][$this->formatTag($release['tag_name'])] = array();
+            $formattedData['releases'][$this->formatTag($release['tag_name'])] = array(
+                'release'   => $release,
+                'issues'    => array()
+            );
         }
 
         //get closed issues, then filter those based on label
@@ -125,7 +128,7 @@ class Github
         foreach ($issues as $issue) {
             foreach ($issue['labels'] as $label) {
                 if (isset($formattedData['releases'][$this->formatTag($label['name'])])) {
-                    $formattedData['releases'][$this->formatTag($label['name'])][] = $issue;
+                    $formattedData['releases'][$this->formatTag($label['name'])]['issues'][] = $issue;
                 }
             }
         }

@@ -17,14 +17,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>{{ repo }} Release History</h1>
+        <h1>{{ repo }} Release History<small class="pull-right">Generated: {{ "now"|date("M nS, Y g:i:sa") }}</small></h1>
         <br>
-        {% for release, issues in releases %}
+        {% for release, details in releases %}
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4>{{ release }}</h4>
+                        <h4>{{ release }} <small style="color:#fff; padding-left: 20px;">{{ details.release.created_at|date("M nS, Y g:i:sa") }}</small></h4>
                     </div>
                     <div class="table-responsive">
                         <table class="table">
@@ -33,9 +33,9 @@
                                 <th>Issue</th>
                                 <th>Title</th>
                                 <th>Detail</th>
-                                <th>User</th>
+                                <th style="min-width:150px">User</th>
                             </tr>
-                            {% for issue in issues %}
+                            {% for issue in details.issues %}
                             <tr>
                                 <td>&nbsp;</td>
                                 <td><a href="{{issue.html_url}}" target="_blank">#{{ issue.number }}</a></td>
