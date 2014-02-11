@@ -4,4 +4,5 @@
 require __DIR__.'/../vendor/autoload.php';
 
 $app = new \Strong\GithubHistory\Console\Application;
-$app->run();
+$app->setAppPath(realpath(__DIR__ . '/../'))
+    ->run();

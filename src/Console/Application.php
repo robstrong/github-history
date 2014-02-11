@@ -9,10 +9,11 @@ use Strong\GithubHistory\Command;
 
 class Application extends BaseApplication
 {
+    protected $appPath;
+
     public function __construct()
     {
-        parent::__construct("GithubHistory", "0.0.1");
-
+        parent::__construct("GithubHistory", "0.1.0");
     }
 
     public function doRun(InputInterface $input, OutputInterface $output)
@@ -25,5 +26,16 @@ class Application extends BaseApplication
     protected function registerCommands()
     {
         $this->add(new Command\Compile);
+    }
+
+    public function setAppPath($path)
+    {
+        $this->appPath = $path;
+        return $this;
+    }
+
+    public function getAppPath()
+    {
+        return $this->appPath;
     }
 }

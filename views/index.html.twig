@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{{ repo }} Release History</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <style>
+        body>.container {
+            background-color: #fff;
+        }
+        body {
+            background-color: #428bca;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ repo }} Release History</h1>
+        <br>
+        {% for release, issues in releases %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>{{ release }}</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Issue</th>
+                                <th>Title</th>
+                                <th>Detail</th>
+                                <th>User</th>
+                            </tr>
+                            {% for issue in issues %}
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td><a href="{{issue.html_url}}" target="_blank">#{{ issue.number }}</a></td>
+                                <td>{{ issue.title }}</td>
+                                <td>{{ issue.body }}</td>
+                                <td>{{ issue.user.login }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
