@@ -32,6 +32,13 @@ class Compile extends Command
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Output Path'
+            )
+            ->addOption(
+                'cache',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Cache Github requests (true/false)',
+                'true'
             );
     }
 
@@ -41,6 +48,9 @@ class Compile extends Command
 
         //pull github data
         $gh = new Github($input, $output);
+        if ($input->getOption('cache') !== 'false') {
+            $gh->cache(true);
+        }
         $gh->authenticate();
         $data = $gh->getData();
 

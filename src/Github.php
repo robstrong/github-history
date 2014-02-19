@@ -14,6 +14,7 @@ class Github
     protected $localKeyLocation;
     protected $client;
     protected $input;
+    protected $cached = false;
     protected $output;
     protected $dialog;
     protected $repoUser;
@@ -70,9 +71,15 @@ class Github
     protected function getClient()
     {
         if  (is_null($this->client)) {
-            $this->setClient(
-                new Client(new CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache')))
-            );
+            if ($this->cached) {
+                $this->setClient(
+                    new Client(new CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache')))
+                );
+            } else {
+                $this->setClient(
+                    new Client
+                );
+            }
         }
         return $this->client;
     }
@@ -88,6 +95,12 @@ class Github
         if (!$this->authWithLocalKey()) {
             $this->promptForGithubCredentials();
         }
+    }
+
+    public function cache($option)
+    {
+        $this->cached = $option;
+        return $this;
     }
 
     public function getData()
