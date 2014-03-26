@@ -111,44 +111,114 @@ class Github
         );
 
         //get releases
+        $tagsToSha = array();
+        $tags = $this->getTags();
+        foreach ($tags as $tag) {
+            $tagsToSha[$this->formatTag($tag['name'])] = $tag['commit']['sha'];
+        }
+
+        $releases = $this->getReleases($tagsToSha);
+
+        //get all closed pull requests and pull out the issue id and the head SHA
+        $shaToIssueNumbers = $this->getShaToIssueNumbers();
+
+        //go through the commit history starting with oldest tag SHA
+        $commits = $this->getCommits();
+        $shaToTag = array_flip($tagsToSha);
+        $currentTag = current($tagsToSha);
+        $tagToIssues = array();
+        foreach ($commits as $commit) {
+            //if sha matches a tag sha, update the current tag
+            if (isset($shaToTag[$commit['sha']])) {
+                $currentTag = $shaToTag[$commit['sha']];
+            }
+            //if sha matches the sha of a pull request, add that issue to the current tag
+            if (isset($shaToIssueNumbers[$commit['sha']])) {
+                $issue = $this->getIssue($shaToIssueNumbers[$commit['sha']]);
+                $releases['releases'][$currentTag]['issues'][] = $issue;
+            }
+        }
+
+        return $releases;
+    }
+
+    protected function getIssue($issueNum)
+    {
+        return $this->getClient()->api('issues')->show(
+            $this->getRepoUser(), 
+            $this->getRepository(), 
+            $issueNum
+        );
+    }
+
+    protected function getPager()
+    {
+        if (!isset($this->pager)) {
+            $this->pager = new \Github\ResultPager($this->getClient());
+        }
+        return $this->pager;
+    }
+
+    protected function getCommits()
+    {
+        return $this->getPager()->fetchAll(
+            $this->getClient()->api('repo')->commits(), 
+            'all',
+            array(
+                $this->getRepoUser(), 
+                $this->getRepository(), 
+                array()
+            )
+        );
+    }
+
+    protected function getShaToIssueNumbers()
+    {
+        $pulls = $this->getPager()->fetchAll(
+            $this->getClient()->api('pull_request'), 
+            'all',
+            array(
+                $this->getRepoUser(), 
+                $this->getRepository(), 
+                'closed',
+            )
+        );
+        $shaToIssueId = array();
+        foreach ($pulls as $pull) {
+            $shaToIssueId[$pull['head']['sha']] = $pull['number'];
+        }
+
+        return $shaToIssueId;
+    }
+
+    protected function getTags()
+    {
+        return $this->getClient()->api('repo')->tags(
+            $this->getRepoUser(),
+            $this->getRepository()
+        );
+    }
+
+    //returns all releases with the tag sha added to it
+    protected function getReleases($tagsToSha)
+    {
+
         $releases = $this->getClient()->api('repo')->releases()->all(
             $this->getRepoUser(),
             $this->getRepository()
         );
 
         foreach ($releases as $release) {
-            $formattedData['releases'][$this->formatTag($release['tag_name'])] = array(
+            $tag = $this->formatTag($release['tag_name']);
+            $formattedData['releases'][$tag] = array(
                 'release'   => $release,
-                'issues'    => array()
+                'issues'    => array(),
+                'sha'       => $tagsToSha[$tag],
             );
-        }
-
-        //get closed issues, then filter those based on label
-        $pager = new \Github\ResultPager($this->getClient());
-        $issues = $pager->fetchAll(
-            $this->getClient()->api('issue'), 
-            'all',
-            array(
-                $this->getRepoUser(), 
-                $this->getRepository(), 
-                array(
-                    'state'     => 'closed',
-                    'filter'    => 'all',
-                    'direction' => 'asc',
-                )
-            )
-        );
-        foreach ($issues as $issue) {
-            foreach ($issue['labels'] as $label) {
-                if (isset($formattedData['releases'][$this->formatTag($label['name'])])) {
-                    $formattedData['releases'][$this->formatTag($label['name'])]['issues'][] = $issue;
-                }
-            }
         }
 
         return $formattedData;
     }
-
     protected function formatTag($tag)
     {
         $tag = ltrim($tag, "v");
@@ -209,7 +279,6 @@ class Github
             )
         );
 
-        file_put_contents($this->localKeyLocation, Yaml::dump(array('github_key' => $key['token'])));
         chmod($this->localKeyLocation, 0700);
 
         $this->getClient()->authenticate($key['token'], Client::AUTH_HTTP_TOKEN);
