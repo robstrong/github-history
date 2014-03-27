@@ -132,9 +132,15 @@ class Github
             if (isset($shaToTag[$commit['sha']])) {
                 $currentTag = $shaToTag[$commit['sha']];
             }
-            //if sha matches the sha of a pull request, add that issue to the current tag
-            if (isset($shaToIssueNumbers[$commit['sha']])) {
-                $issue = $this->getIssue($shaToIssueNumbers[$commit['sha']]);
+            //if the commit message matches "Merge pull request #xxx" then add the issue
+            if (strpos($commit['commit']['message'], "Merge pull request #") !== false) {
+                $issueId = substr(
+                    $commit['commit']['message'],
+                    20,
+                    strpos($commit['commit']['message'], ' ', 20) -
+                        strlen($commit['commit']['message'])
+                );
+                $issue = $this->getIssue($issueId);
                 $releases['releases'][$currentTag]['issues'][] = $issue;
             }
         }
