@@ -9,8 +9,8 @@ Generate an HTML document containing the release history of a Github repository.
 
 ## Install
 
-`git clone git@github.com:robstrong/github-history.git`
-`composer.phar install` - See [here](https://getcomposer.org/) to install composer
+1. `git clone git@github.com:robstrong/github-history.git`
+2. `composer.phar install` - See [here](https://getcomposer.org/) to install composer
 
 ## Usage
 `php bin/ghh compile`
