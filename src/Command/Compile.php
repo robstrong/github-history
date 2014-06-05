@@ -62,5 +62,7 @@ class Compile extends Command
         }
         $renderer->setTemplatePath($this->getApplication()->getAppPath() . '/views/')
             ->writeTo($outputPath);
+
+        $output->writeln("Done!");
     }
 }
