@@ -70,7 +70,7 @@ class Github
 
     protected function getClient()
     {
-        if  (is_null($this->client)) {
+        if (is_null($this->client)) {
             if ($this->cached) {
                 $this->setClient(
                     new Client(new CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache')))
@@ -138,7 +138,7 @@ class Github
                     $commit['commit']['message'],
                     20,
                     strpos($commit['commit']['message'], ' ', 20) -
-                        strlen($commit['commit']['message'])
+                    strlen($commit['commit']['message'])
                 );
                 $issue = $this->getIssue($issueId);
                 $releases['releases'][$currentTag]['issues'][] = $issue;
@@ -151,8 +151,8 @@ class Github
     protected function getIssue($issueNum)
     {
         return $this->getClient()->api('issues')->show(
-            $this->getRepoUser(), 
-            $this->getRepository(), 
+            $this->getRepoUser(),
+            $this->getRepository(),
             $issueNum
         );
     }
@@ -168,11 +168,11 @@ class Github
     protected function getCommits()
     {
         return $this->getPager()->fetchAll(
-            $this->getClient()->api('repo')->commits(), 
+            $this->getClient()->api('repo')->commits(),
             'all',
             array(
-                $this->getRepoUser(), 
-                $this->getRepository(), 
+                $this->getRepoUser(),
+                $this->getRepository(),
                 array()
             )
         );
@@ -181,12 +181,12 @@ class Github
     protected function getShaToIssueNumbers()
     {
         $pulls = $this->getPager()->fetchAll(
-            $this->getClient()->api('pull_request'), 
+            $this->getClient()->api('pull_request'),
             'all',
             array(
-                $this->getRepoUser(), 
-                $this->getRepository(), 
-                'closed',
+                $this->getRepoUser(),
+                $this->getRepository(),
+                array('closed'),
             )
         );
         $shaToIssueId = array();
@@ -239,13 +239,9 @@ class Github
         if (!is_file($this->localKeyLocation)) {
             return false;
         }
-        $data = Yaml::parse(file_get_contents($this->localKeyLocation));
+        $token = file_get_contents($this->localKeyLocation);
 
-        if (!isset($data['github_key'])) {
-            return false;
-        }
-
-        $this->getClient()->authenticate($data['github_key'], null, Client::AUTH_HTTP_TOKEN);
+        $this->getClient()->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
         $user = $this->getClient()->api('current_user')->show();
 
         return true;
@@ -278,15 +274,36 @@ class Github
     {
         $this->getClient()->authenticate($user, $password, Client::AUTH_HTTP_PASSWORD);
 
-        $key = $this->getClient()->api('authorizations')->create(
-            array(
-                'note'      => 'Github-History on ' . gethostname(),
-                'scopes'    => array('repo')
-            )
-        );
-
+        $key = $this->getOrCreateGithubKey();
+        file_put_contents($this->localKeyLocation, $key['token']);
         chmod($this->localKeyLocation, 0700);
 
-        $this->getClient()->authenticate($key['token'], Client::AUTH_HTTP_TOKEN);
+        $this->getClient()->authenticate($key, Client::AUTH_HTTP_TOKEN);
+    }
+
+    protected function getOrCreateGithubKey()
+    {
+        $note = 'Github-History on ' . gethostname();
+        $auths = $this->getPager()->fetchAll(
+            $this->getClient()->api('authorizations'),
+            'all'
+        );
+        $key = false;
+        foreach ($auths as $auth) {
+            if ($auth['note'] == $note) {
+                $key = $auth;
+                break;
+            }
+        }
+
+        if (!$key) {
+            $key = $this->getClient()->api('authorizations')->create(
+                array(
+                    'note'      => $note,
+                    'scopes'    => array('public_repo', 'repo')
+                )
+            );
+        }
+        return $key;
     }
 }
