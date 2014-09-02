@@ -1,6 +1,6 @@
 # github-history
 
-Generate an HTML document containing the release history of a Github repository.
+Generate an HTML document containing the issue list of a Github repository.
 
 
 ## Assumptions
