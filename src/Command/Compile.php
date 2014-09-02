@@ -52,13 +52,15 @@ class Compile extends Command
             $gh->cache(true);
         }
         $gh->authenticate();
-        $data = $gh->getData();
-
+        
+        $data   = $gh->removeFromIssueListByKey($gh->getIssues(),'pull_request');
+        
+        print_r($data);
         //render HTML
-        $renderer = new Renderer($data);
-        $outputPath = $this->getApplication()->getAppPath() . '/output/';
+        $renderer           = new Renderer($data);
+        $outputPath         = $this->getApplication()->getAppPath() . '/output/';
         if ($input->getOption('output-path')) {
-            $outputPath = $input->getOption('output-path');
+            $outputPath     = $input->getOption('output-path');
         }
         $renderer->setTemplatePath($this->getApplication()->getAppPath() . '/views/')
             ->writeTo($outputPath);

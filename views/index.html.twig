@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>{{ repo }} Release History</title>
+    <title>{{ repo }} Issue List</title>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
     <style>
@@ -17,27 +17,27 @@
 </head>
 <body>
     <div class="container">
-        <h1>{{ repo }} Release History<small class="pull-right">Generated: {{ "now"|date("M jS, Y g:i:sa") }}</small></h1>
+        <h1>{{ repo }} Issue List<small class="pull-right">Generated: {{ "now"|date("M jS, Y g:i:sa") }}</small></h1>
         <br>
-        {% for release, details in releases %}
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4>{{ release }} - {{ details.release.name }} <small class="pull-right" style="color:#fff; padding-left: 20px;">{{ details.release.created_at|date("M jS, Y g:i:sa") }}</small></h4>
-                    </div>
+                    <div class="panel-heading"> {{ issues|length }} Issues</div>
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th>&nbsp;</th>
+                                <th>Labels</th>
+                                <th>Status</th>
                                 <th>Issue</th>
                                 <th>Title</th>
                                 <th>Detail</th>
-                                <th style="min-width:150px">User</th>
+                                <th style="min-width:150px">Creator</th>
                             </tr>
-                            {% for issue in details.issues %}
+                            {% for issue in issues %}
                             <tr>
-                                <td>&nbsp;</td>
+                            
+                                <td>{% for labels in issue %}{% set theLabelNames = [] %}{% for labelNames in labels %}{% if labelNames.name|length > 0 %}{% set theLabelNames = theLabelNames|merge([labelNames.name]) %}{% endif %}{% endfor %}{{ theLabelNames|join(', ') }}{% endfor %}</td>
+                                <td>{{ issue.state }}</td>
                                 <td><a href="{{issue.html_url}}" target="_blank">#{{ issue.number }}</a></td>
                                 <td>{{ issue.title }}</td>
                                 <td>{{ issue.body }}</td>
@@ -49,6 +49,5 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
 </body>

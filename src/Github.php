@@ -148,6 +148,46 @@ class Github
         return $releases;
     }
 
+    public function getIssues()
+    {
+        $formattedData['issues'] = $this->getPager()->fetchAll(
+            $this->getClient()->api('issues'),
+            'all',
+            array(
+                $this->getRepoUser(),
+                $this->getRepository(),
+            )
+        );
+        return $formattedData;
+    }
+    
+    /**
+     * Can be used to remove fetched items that are pull requests. (or other).
+     * Remove issues that are actually Pull Requests.
+     * @param data : Array : Associative array with top-level key "issues".
+     *               For example, $data['issues'][0], $data['issues'][1]
+     * @param remKey : String : What key will determine whether or not the element gets unset.
+     * @return Array. On error, it returns the original data argument.
+     */
+    public function removeFromIssueListByKey($data, $remKey = 'pull_request')
+    {
+        try {
+            if (! is_array($data['issues'])) {
+                throw new Exception('Did not get usable array as arg. 1');
+            }
+            $issueCount = count($data['issues']);
+        
+            for ($i = 0; $i < $issueCount; $i++) {
+                if (array_key_exists($remKey, $data['issues'][$i])) {
+                    unset($data['issues'][$i]);
+                }
+            }
+        } catch (Exception $e) {
+            
+        }
+        return $data;
+    }
+    
     protected function getIssue($issueNum)
     {
         return $this->getClient()->api('issues')->show(
