@@ -55,7 +55,9 @@ class Compile extends Command
         
         $data   = $gh->removeFromIssueListByKey($gh->getIssues(),'pull_request');
         
-        print_r($data);
+        //Remove this at some point. Dumps to shell unless redirected to file.
+        //print_r($data);
+        
         //render HTML
         $renderer           = new Renderer($data);
         $outputPath         = $this->getApplication()->getAppPath() . '/output/';
