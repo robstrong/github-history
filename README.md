@@ -16,6 +16,11 @@ Generate an HTML document containing the issue list of a Github repository.
 `php bin/ghh compile`
 
 Some good options to use with the above command:
- `--repo-user (-u)      Github Repository User Name`
+
+ `--repo-user (-u)      Github Repository User Name`\r\n
  `--repository (-r)     Github Repository Name`
  `--output-path (-o)    Output Path`
+
+Sample of a compile call with options:
+
+php bin/ghh compile -u <Owner/User> -r <Repo-Name> -o output/issues/
