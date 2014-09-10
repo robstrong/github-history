@@ -23,4 +23,4 @@ Some good options to use with the above command:
 
 Sample of a compile call with options:
 
-`php bin/ghh compile -u <Owner/User> -r <Repo-Name> -o output/issues/`
+`php bin/ghh compileissues -u <Owner/User> -r <Repo-Name> -o output/issues/`
