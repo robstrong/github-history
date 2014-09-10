@@ -28,6 +28,14 @@
         .refactor {
             color               : #000;
         }
+        /** 
+         * For Chrome, override a Bootstrap setting to handle long, unspaced text.
+         * http://stackoverflow.com/questions/12195469/bootstrap-tables-overflowing-with-long-unspaced-text
+         */ 
+        table.table {
+            table-layout        : fixed;
+            word-wrap           : break-word;
+        }    
     </style>
 </head>
 <body>
@@ -41,12 +49,12 @@
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th>Labels</th>
-                                <th>Status</th>
-                                <th>Issue</th>
-                                <th>Title</th>
-                                <th>Detail</th>
-                                <th style="min-width:150px">Creator</th>
+                                <th width="10%">Labels</th>
+                                <th width="8%">Status</th>
+                                <th width="8%">Issue</th>
+                                <th width="20%">Title</th>
+                                <th width="40%">Detail</th>
+                                <th>Creator</th>
                             </tr>
                             {% for issue in issues %}
                             <tr>
