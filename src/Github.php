@@ -190,47 +190,29 @@ class Github
     
     /**
      * Remove issues having unwanted labels.
-     * @param data | Array | your main, full array.
-     * @param unwanted | Array | list of Labels for filtering.
+     * @param data      | Array | your main, full array.
+     * @param unwanted  | Array | list of Labels for filtering.
+     * @return data     | Associative array with possibly a lot fewer items.
      */
     public function removeIssuesHavingLabels($data, $unwanted = array())
     {
         try {
+            
             if (! is_array($data)) {
                 throw new Exception('Did not get an array as 1st arg');
             }
             
-            //Set a default filter set if Caller does not provide.
-            if (count($unwanted) == 0) {
-                $unwanted   = array('Design', 'enhancement', 'Backlog');
-            }
-            
             $issues         = $data['issues'];
-            
-            $issues_qty     = count($issues);
-            
             $issue_keys     = array_keys($issues);
             
             foreach($issue_keys as $ik) {
                 
-                //Debugging
-                //echo "key {$ik} Issue ID " .$issues[$ik]['id'] ." \n";
-                
-                $labels_array = array_filter($issues[$ik]['labels']);
+                foreach($issues[$ik]['labels'] as $la) {
                     
-                foreach($labels_array as $la) {
-                    
-                    $lab_name = $la['name'];
-                    
-                    if (in_array($lab_name, $unwanted)) {
-                        //Debugging
-                        //echo "{$lab_name} is not allowed so remove issue index {$ik}\n";
+                    if (in_array($la['name'], $unwanted)) {
                         
-                        // This label isn't what we want, remove from main array.
+                        //This label is undesired, remove from main array.
                         unset($data['issues'][$ik]);
-                    } else {
-                        //Debugging
-                        //echo " .... Good Label {$lab_name} up in here \n";
                     }
                 }
             }
