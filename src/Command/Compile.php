@@ -52,24 +52,13 @@ class Compile extends Command
             $gh->cache(true);
         }
         $gh->authenticate();
-        
-        //Remove Pull Requests
-        $data   = $gh->removeFromIssueListByKey($gh->getIssues(),'pull_request');
-        
-        //Remove this at some point. Dumps to shell unless redirected to file.
-        //print_r($data);
-        
-        //Set a list of labels we don't want here.
-        $undesiredLabels    = array('Design', 'enhancement', 'Backlog');
-        
-        //Now prune the array by removing Issues containing undesired labels.
-        $data               = $gh->removeIssuesHavingLabels($data, $undesiredLabels);
-        
+        $data = $gh->getData();
+
         //render HTML
-        $renderer           = new Renderer($data);
-        $outputPath         = $this->getApplication()->getAppPath() . '/output/';
+        $renderer = new Renderer($data);
+        $outputPath = $this->getApplication()->getAppPath() . '/output/';
         if ($input->getOption('output-path')) {
-            $outputPath     = $input->getOption('output-path');
+            $outputPath = $input->getOption('output-path');
         }
         $renderer->setTemplatePath($this->getApplication()->getAppPath() . '/views/')
             ->writeTo($outputPath);
