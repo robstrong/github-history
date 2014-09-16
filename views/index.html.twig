@@ -3,64 +3,41 @@
 <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>Campaign Drive Issue List</title>
+    <title>{{ repo }} Release History</title>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
     <style>
         body>.container {
-            background-color    : #fff;
+            background-color: #fff;
         }
         body {
-            background-color    : #428bca;
+            background-color: #428bca;
         }
-        
-        .bug, .automated, .refactor {
-            padding             : 4px;
-            white-space         : nowrap;
-            margin-bottom       : 6px;
-        }
-        .bug {
-            color               : #fff;
-        }
-        .automated {
-            color               : #000;
-        }
-        .refactor {
-            color               : #000;
-        }
-        /** 
-         * For Chrome, override a Bootstrap setting to handle long, unspaced text.
-         * http://stackoverflow.com/questions/12195469/bootstrap-tables-overflowing-with-long-unspaced-text
-         */ 
-        table.table {
-            table-layout        : fixed;
-            word-wrap           : break-word;
-        }    
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Campaign Drive Issue List<small class="pull-right">Generated: {{ "now"|date("M jS, Y g:i:sa") }}</small></h1>
+        <h1>{{ repo }} Release History<small class="pull-right">Generated: {{ "now"|date("M jS, Y g:i:sa") }}</small></h1>
         <br>
+        {% for release, details in releases %}
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading"> {{ issues|length }} Issues</div>
+                    <div class="panel-heading">
+                        <h4>{{ release }} - {{ details.release.name }} <small class="pull-right" style="color:#fff; padding-left: 20px;">{{ details.release.created_at|date("M jS, Y g:i:sa") }}</small></h4>
+                    </div>
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th width="10%">Labels</th>
-                                <th width="8%">Status</th>
-                                <th width="8%">Issue</th>
-                                <th width="20%">Title</th>
-                                <th width="40%">Detail</th>
-                                <th>Creator</th>
+                                <th>&nbsp;</th>
+                                <th>Issue</th>
+                                <th>Title</th>
+                                <th>Detail</th>
+                                <th style="min-width:150px">User</th>
                             </tr>
-                            {% for issue in issues %}
+                            {% for issue in details.issues %}
                             <tr>
-                                <td>{% for labels in issue %}{% set theLabelNames = [] %}{% for labelNames in labels %}{% if labelNames.name|length > 0 %}{% set theLabelNames = theLabelNames|merge( [{'type':labelNames.name, 'bgndcolor':labelNames.color}]) %}{% endif %}{% endfor %}
-                                {% for key, value in theLabelNames %}<p class="{{ value.type }}" style="background-color:#{{value.bgndcolor}}">{{ value.type }}</p>{% endfor %}{% endfor %}</td>
-                                <td>{{ issue.state }}</td>
+                                <td>&nbsp;</td>
                                 <td><a href="{{issue.html_url}}" target="_blank">#{{ issue.number }}</a></td>
                                 <td>{{ issue.title }}</td>
                                 <td>{{ issue.body }}</td>
@@ -72,5 +49,6 @@
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </body>
