@@ -71,9 +71,10 @@ class CompileIssues extends Command
         if ($input->getOption('output-path')) {
             $outputPath     = $input->getOption('output-path');
         }
-        $renderer->setTemplatePath($this->getApplication()->getAppPath() . '/views/')
+        
+        //Set path to find the issues template file
+        $renderer->setTemplatePath($this->getApplication()->getAppPath() . '/views/issues/')
             ->writeTo($outputPath);
-
         $output->writeln("Done!");
     }
 }
