@@ -133,14 +133,8 @@ class Github
                 $currentTag = $shaToTag[$commit['sha']];
             }
             //if the commit message matches "Merge pull request #xxx" then add the issue
-            if (strpos($commit['commit']['message'], "Merge pull request #") !== false) {
-                $issueId = substr(
-                    $commit['commit']['message'],
-                    20,
-                    strpos($commit['commit']['message'], ' ', 20) -
-                    strlen($commit['commit']['message'])
-                );
-                $issue = $this->getIssue($issueId);
+            if (preg_match('/^Merge pull request #([0-9]+)/', $commit['commit']['message'], $matches)) {
+                $issue = $this->getIssue($matches[1]);
                 $releases['releases'][$currentTag]['issues'][] = $issue;
             }
         }
