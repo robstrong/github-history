@@ -9,11 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class CompileIssues extends Command
+class Issues extends Command
 {
     protected function configure()
     {
-        $this->setName("compileissues")
+        $this->setName("issues")
             ->setDescription("Compile the HTML file output")
             ->addOption(
                 'repo-user',
@@ -32,6 +32,13 @@ class CompileIssues extends Command
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'Output Path'
+            )
+            ->addOption(
+                'label-filter',
+                'l',
+                InputOption::VALUE_REQUIRED,
+                'List of labels to filter out of issue list',
+                'false'
             )
             ->addOption(
                 'cache',
@@ -56,14 +63,23 @@ class CompileIssues extends Command
         //Remove Pull Requests
         $data   = $gh->removeFromIssueListByKey($gh->getIssues(),'pull_request');
         
-        //Remove this at some point. Dumps to shell unless redirected to file.
-        //print_r($data);
-        
-        //Set a list of labels we don't want here.
-        $undesiredLabels    = array('Design', 'enhancement', 'Backlog');
+        /**
+         * If option 'l' was provided, its a comma-delimited list of labels to filter out.
+         * Take the list and convert it to an array. Otherwise init an empty array.
+         * In the event of leading or trailing spaces in the comma-delimited list, 
+         *   run trim on each element.
+         */
+        if ($input->getOption('label-filter') !== 'false') {
+            $labelsList     = trim($input->getOption('label-filter'));
+            $labelsArray    = explode(",", $labelsList);
+            $unwantedLabels = array_map("trim", $labelsArray);
+            
+        } else {
+            $unwantedLabels = array();
+        }
         
         //Now prune the array by removing Issues containing undesired labels.
-        $data               = $gh->removeIssuesHavingLabels($data, $undesiredLabels);
+        $data               = $gh->removeIssuesHavingLabels($data, $unwantedLabels);
         
         //render HTML
         $renderer           = new Renderer($data);
