@@ -29,5 +29,6 @@ Sample call to compile issues (with options listed above):
 `php bin/ghh issues -u <Owner/User> -r <Repo-Name> -o output/issues/`
 
 If you would like to remove specific labels from your issues list, use parameter l (lower-case L) and provide a quoted comma-separated list:
+
 `php bin/ghh issues -u Pica9 -r cd-core -l "Design, enhancement, Backlog" -o output/issues/`
 
