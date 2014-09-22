@@ -12,8 +12,11 @@ Generate an HTML document containing either an issue list or release history of 
 1. `git clone git@github.com:robstrong/github-history.git`
 2. `composer.phar install` - See [here](https://getcomposer.org/) to install composer
 
-## To compile Release History or compile Issues List:
-`php bin/ghh history` | `php bin/ghh issues`
+## To compile Release History:
+`php bin/ghh history`
+
+## To compile a List of Issues:
+`php bin/ghh issues`
 
 Some good options to use with either of the above commands:
 
