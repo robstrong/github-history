@@ -1,6 +1,6 @@
 # github-history
 
-Generate an HTML document containing the issue list of a Github repository.
+Generate an HTML document containing either an issue list or release history of a Github repository.
 
 
 ## Assumptions
@@ -12,15 +12,15 @@ Generate an HTML document containing the issue list of a Github repository.
 1. `git clone git@github.com:robstrong/github-history.git`
 2. `composer.phar install` - See [here](https://getcomposer.org/) to install composer
 
-## Usage
-`php bin/ghh compile`
+## To compile Release History or compile Issues List:
+`php bin/ghh history` | `php bin/ghh issues`
 
-Some good options to use with the above command:
+Some good options to use with either of the above commands:
 
  `--repo-user (-u)      Github Repository User Name` 
  `--repository (-r)     Github Repository Name`
  `--output-path (-o)    Output Path`
 
-Sample of a compile call with options:
+Sample call to compile issues (with options listed above):
 
-`php bin/ghh compileissues -u <Owner/User> -r <Repo-Name> -o output/issues/`
+`php bin/ghh issues -u <Owner/User> -r <Repo-Name> -o output/issues/`
