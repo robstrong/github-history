@@ -24,7 +24,11 @@
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4>{{ release }} - {{ details.release.name }} <small class="pull-right" style="color:#fff; padding-left: 20px;">{{ details.release.created_at|date("M jS, Y g:i:sa") }}</small></h4>
+                        <h4>{{ release }} {{ details.release.name }} 
+                            <small class="pull-right" style="color:#fff; padding-left: 20px;">
+				{{ details.release.created_at|date("M jS, Y g:i:sa") }}
+			    </small>
+                        </h4>
                     </div>
                     <div class="table-responsive">
                         <table class="table">
