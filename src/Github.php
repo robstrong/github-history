@@ -193,10 +193,12 @@ class Github
 
     protected function getTags()
     {
-        return $this->getClient()->api('repo')->tags(
+        $paginator  = new \Github\ResultPager($this->getClient());
+        $parameters = array(
             $this->getRepoUser(),
-            $this->getRepository()
+            $this->getRepository(),
         );
+        return $paginator->fetchAll($this->getClient()->api('repo'), 'tags', $parameters);
     }
 
     //returns all releases with the tag sha added to it
