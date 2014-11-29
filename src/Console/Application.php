@@ -25,7 +25,8 @@ class Application extends BaseApplication
 
     protected function registerCommands()
     {
-        $this->add(new Command\Compile);
+        $this->add(new Command\Releases);
+        $this->add(new Command\Issues);
     }
 
     public function setAppPath($path)

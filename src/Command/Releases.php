@@ -9,11 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class Compile extends Command
+class Releases extends Command
 {
     protected function configure()
     {
-        $this->setName("compile")
+        $this->setName("releases")
             ->setDescription("Compile the HTML file output")
             ->addOption(
                 'repo-user',
